@@ -1,14 +1,39 @@
-import { render, screen } from '@testing-library/react';
+import React from 'react';
+import ReactDOM from 'react-dom';
 import App from './App';
+import Enzyme, { shallow } from 'enzyme'
+import Adapter from 'enzyme-adapter-react-16'
 
-import Enzymes , {shallow} from "enzyme"
+Enzyme.configure({ adapter: new Adapter() })
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+it('renders without crashing', () => {
+  const div = document.createElement('div');
+  ReactDOM.render(<App />, div);
 });
 
-test("addition" , ()=>{
-  const wrapper = shallow(<App/>)
+it('doesnt crash on partial input', () => {
+  const wrapper = shallow(<App />)
+  wrapper.find('input').simulate('change', {
+    target: { value: '5' }
+  })
+})
+
+it('multiplies', () => {
+  const wrapper = shallow(<App />)
+
+  wrapper.find('input').simulate('change', {
+    target: { value: '5*9' }
+  })
+  const renderedResult = wrapper.find('#result').text()
+  expect(renderedResult).toBe('45')
+})
+
+it('adds', () => {
+  const wrapper = shallow(<App />)
+
+  wrapper.find('input').simulate('change', {
+    target: { value: '25+10' }
+  })
+  const renderedResult = wrapper.find('#result').text()
+  expect(renderedResult).toBe('35')
 })
